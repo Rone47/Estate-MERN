@@ -13,6 +13,7 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const  [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateSucces, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
 
 
@@ -60,11 +61,11 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatchEvent(updateUserStart());
-      const res = await fetch (`api/user/update/${currentUser._id}`,  {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: 'POST',
-        headers:  {
-          'Content-Type': 'application/json'
+        headers: {
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
@@ -72,11 +73,12 @@ export default function Profile() {
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
         return;
-      } 
+      }
 
       dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
-      dispatchEvent(updateUserFailure(error.message));
+      dispatch(updateUserFailure(error.message));
     }
   };
   return (
@@ -141,12 +143,20 @@ export default function Profile() {
 
         />
 
-        <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80 font-semibold'>{loading ? 'Loading...': 'Update'}</button>
+        <button
+          disabled={loading}
+          className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'
+        >
+          {loading ? 'Loading...' : 'Update'}
+        </button>
       </form>
       <div className='flex justify-between mt-5'>
         <span className='text-red-700 cursor-pointer font-medium'>Delete acoount</span>
         <span className='text-red-700 cursor-pointer font-medium'>Sign out</span>
       </div>
+
+      <p className='text-red-700 mt-5'>{error ? error: ''}</p>
+      <p className='text-green-700 mt-5'>{updateSucces ?'User is updated successfully!' : ''}</p>
     </div>
   )
 }

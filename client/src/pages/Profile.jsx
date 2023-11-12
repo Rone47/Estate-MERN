@@ -7,6 +7,13 @@ import { Link } from 'react-router-dom';
 import  {useDispatch} from 'react-redux';
 
 
+//firebase storage
+//allow read;
+//allow write: if
+//request.resource.size < 2 * 1024 * 1024 &&
+//request.resource.contentType.matches('images/.*') 
+
+
 export default function Profile() {
   const fileRef =useRef(null);
   const {currentUser, loading, error} = useSelector((state) => state.user);

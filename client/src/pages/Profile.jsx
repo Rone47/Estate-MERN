@@ -21,7 +21,7 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const  [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updateSucces, setUpdateSuccess] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
@@ -137,7 +137,25 @@ export default function Profile() {
     } catch (error) {
       setShowListingsError(true);
     }
-  }
+  };
+
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res =await fetch (`/api/listing/delete/${listingId}`,{
+        method: 'DELETE',
+      });
+        const data = await res.json();
+        if (data.success === false) {
+          console.log(data.message);
+          return;
+        }
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId));
+       
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className='p-3 max-w-xl mx-auto'>
       <h1 className='text-3xl font-semibold text-center m-7'>Profile</h1>
@@ -216,7 +234,7 @@ export default function Profile() {
       </div>
 
       <p className='text-red-700 mt-5'>{error ? error: ''}</p>
-      <p className='text-green-700 mt-5'>{updateSucces ? 'User is updated successfully!' : ''}</p>
+      <p className='text-green-700 mt-5'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
 
       <button onClick={handleShowListings} className='text-green-700 w-full font-semibold'>Show Listings</button>
       <p className='text-red-700 mt-5 '>{showListingsError ? 'Error showing listings' : ''}</p>
@@ -232,7 +250,7 @@ export default function Profile() {
           <p>{listing.name}</p>
          </Link>
          <div className='flex flex-col items-center'>
-          <button className='text-red-700 uppercase'>Delete</button>
+          <button onClick={()=>handleListingDelete(listing._id)} className='text-red-700 uppercase'>Delete</button>
           <button className='text-green-700 uppercase'>Edit</button>
          </div>
         </div>

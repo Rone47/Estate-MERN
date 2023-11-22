@@ -1,5 +1,5 @@
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { app } from '../firebase';
 import {useSelector} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,15 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(formData);
+  
+
+  useEffect(() => {
+    const fetchListing = async () =>{
+
+    }
+    fetchListing();
+  }, []); 
+  
   const handleImageSubmit = async () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);

@@ -2,12 +2,13 @@ import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/
 import { useState, useEffect } from 'react';
 import { app } from '../firebase';
 import {useSelector} from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 export default function CreateListing() {
   const {currentUser} = useSelector(state => state.user);
   const navigate = useNavigate();
+  const params = useParams();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -31,7 +32,14 @@ export default function CreateListing() {
 
   useEffect(() => {
     const fetchListing = async () =>{
-
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/get/${listingId}`);
+      const data = await res.json();
+      if(data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
     }
     fetchListing();
   }, []); 
@@ -125,7 +133,7 @@ export default function CreateListing() {
       if(+formData.regularPrice < +formData.discountedPrice) return setError('Discounted price must be lower than regular price.')
       setLoading(true);
       setError(false);
-      const res = await fetch('/api/listing/create', {
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +154,8 @@ export default function CreateListing() {
       setError(error.message);
       setLoading(false);
     }
-  }
+  };
+
   return (
     <main className='p-3 max-w-4xl mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7 text-slate-900'>
@@ -320,7 +329,7 @@ export default function CreateListing() {
           </div>
          </div>
 
-        )}
+        )};
      
 
 

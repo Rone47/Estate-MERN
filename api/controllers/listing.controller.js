@@ -60,6 +60,6 @@ export const getListing = async (req, res, next) => {
         }
         res.status(200).json(listing);
     } catch (error) {
-        
+        next(error)
     }
 }

@@ -16,8 +16,10 @@ export default function Listing() {
     const fetchListing = async () => {
       try {
         setLoading(true);
-        console.log('Listing ID:', params.listingId);
-        const res = await fetch(`/api/listing/get/${params.listingId}`);
+        
+        const url = `/api/listing/get/${params.listingId}`
+
+        const res = await fetch(url);
        
         const data = await res.json(); 
         if(data.success === false) {
@@ -40,9 +42,19 @@ export default function Listing() {
   return (
     <main>
       {loading && <p className='text-center my-7 text-2xl'>Loading...</p>}
-      {error && <p className='text-center my-7 text-2xl'>Something went wrong!</p>}
-      {listing && !loading && !error (
-        <h1>{listing.name}</h1>
+      {error && (
+        <p className='text-center my-7 text-2xl'>Something went wrong!</p>
+        )}
+      {listing && !loading && !error && (
+       <div>
+        <Swiper navigation>
+         {listing.imageUrls.map((url) => (
+          <SwiperSlide key={url}>
+            <div className='h-[550px]' style={{background: `url(${url}) center no-repeat`, backgroundSize: 'cover'}}></div>
+          </SwiperSlide>
+         ))}
+        </Swiper>
+      </div>
       )}
     </main>
   )

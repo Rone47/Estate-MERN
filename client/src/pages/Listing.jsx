@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import SwiperCore from 'swiper';
+import {useSelector} from 'react-redux';
 import {Navigation} from 'swiper/modules';
 import 'swiper/css/bundle';
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt,  FaParking, FaShare} from 'react-icons/fa';
@@ -14,6 +15,8 @@ export default function Listing() {
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
   const params = useParams();
+  const {currentUser} = useSelector((state) =>state.user);
+
   useEffect(() =>{
     const fetchListing = async () => {
       try {
@@ -123,6 +126,10 @@ export default function Listing() {
               {listing.furnished ? 'Furnished' : 'Unfurnished'}
             </li>
            </ul>
+           {currentUser && listing.userRef !== currentUser._id && (
+            <button className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'>Contact Landlord</button>
+           )}
+           
           </div>
       </div>
       )}
